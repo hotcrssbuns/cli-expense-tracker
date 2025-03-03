@@ -36,7 +36,21 @@ class CommandParser:
         except (TypeError, ValueError) as e:
             print(f"Invalid: {e}")
 
-    def add(self, description, log, amount, amount_number): ...
+    def add(self, description, log, amount, amount_number):
+        current_time = datetime.now()
+        formatted_time = current_time.strftime("%Y-%d-%m")
+        id = len(self.expenses) + 1
+        expense = {
+            "id": id,
+            "description": log,
+            "time": formatted_time,
+            "amount": amount_number,
+        }
+        self.expenses.append(expense)
+        with open("sample.json", "w") as outfile:
+            json.dump(self.expenses, outfile)
+
+        print(f"Expense added succesfully (ID: {id})")
 
     def list(self): ...
 
