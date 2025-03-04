@@ -1,7 +1,7 @@
 import shlex
 import json
 from datetime import datetime
-import os
+import sys
 
 
 class CommandParser:
@@ -12,6 +12,7 @@ class CommandParser:
             "summary": self.summary,
             "delete": self.delete,
             "update": self.update,
+            "exit": self.exit,
         }
 
         try:
@@ -36,15 +37,15 @@ class CommandParser:
         except (TypeError, ValueError) as e:
             print(f"Invalid: {e}")
 
-    def add(self, description, log, amount, amount_number):
+    def add(self, description, amount):
         current_time = datetime.now()
-        formatted_time = current_time.strftime("%Y-%d-%m")
+        formatted_date = current_time.strftime("%Y-%d-%m")
         id = len(self.expenses) + 1
         expense = {
             "id": id,
-            "description": log,
-            "time": formatted_time,
-            "amount": amount_number,
+            "description": description,
+            "date": formatted_date,
+            "amount": amount,
         }
         self.expenses.append(expense)
         with open("sample.json", "w") as outfile:
@@ -52,10 +53,18 @@ class CommandParser:
 
         print(f"Expense added succesfully (ID: {id})")
 
-    def list(self): ...
+    def list(self):
+        print("ID    Date    Description    Amount")
+        for expense in self.expenses:
+            print(
+                f"{expense["id"]}    {expense["date"]}    {expense["description"]}    ${expense["amount"]}"
+            )
 
     def summary(self): ...
 
     def delete(self): ...
 
     def update(self): ...
+
+    def exit(self):
+        sys.exit()
