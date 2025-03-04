@@ -60,7 +60,11 @@ class CommandParser:
                 f"{expense["id"]}    {expense["date"]}    {expense["description"]}    ${expense["amount"]}"
             )
 
-    def summary(self): ...
+    def summary(self):
+        total = 0
+        for expense in self.expenses:
+            total += int(expense["amount"])
+        print(f"Total expenses: ${total}")
 
     def delete(self): ...
 
