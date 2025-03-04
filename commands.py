@@ -80,9 +80,13 @@ class CommandParser:
 
         with open("sample.json", "w") as outfile:
             json.dump(self.expenses, outfile)
-        print("Task deleted")
+        print("Expense deleted successfully")
 
-    def update(self): ...
+    def update(self, id, description, amount):
+        for expense in self.expenses:
+            if id == expense["ID"]:
+                expense["Description"] = description
+                expense["Amount"] = amount
 
     def exit(self):
         sys.exit()
