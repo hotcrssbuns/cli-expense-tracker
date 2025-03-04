@@ -2,6 +2,7 @@ import shlex
 import json
 from datetime import datetime
 import sys
+from tabulate import tabulate
 
 
 class CommandParser:
