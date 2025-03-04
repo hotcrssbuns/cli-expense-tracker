@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 import sys
 from tabulate import tabulate
+import os
+import platform
 
 
 class CommandParser:
@@ -14,6 +16,7 @@ class CommandParser:
             "delete": self.delete,
             "update": self.update,
             "exit": self.exit,
+            "commands": self.commands,
         }
 
         try:
@@ -43,10 +46,10 @@ class CommandParser:
         formatted_date = current_time.strftime("%Y-%d-%m")
         id = len(self.expenses) + 1
         expense = {
-            "id": id,
-            "description": description,
-            "date": formatted_date,
-            "amount": amount,
+            "ID": id,
+            "Description": description,
+            "Date": formatted_date,
+            "Amount": amount,
         }
         self.expenses.append(expense)
         with open("sample.json", "w") as outfile:
@@ -55,27 +58,24 @@ class CommandParser:
         print(f"Expense added succesfully (ID: {id})")
 
     def list(self):
-        print("ID    Date    Description    Amount")
-        for expense in self.expenses:
-            print(
-                f"{expense["id"]}    {expense["date"]}    {expense["description"]}    ${expense["amount"]}"
-            )
+        self.clear()
+        print(tabulate(self.expenses, headers="keys", tablefmt="github"))
 
     def summary(self):
         total = 0
         for expense in self.expenses:
-            total += int(expense["amount"])
+            total += int(expense["Amount"])
         print(f"Total expenses: ${total}")
 
     def delete(self, id):
         id = int(id)
         for expense in self.expenses:
-            if id == expense["id"]:
+            if id == expense["ID"]:
                 index = id - 1
                 self.expenses.pop(index)
         id = 1
         for expense in self.expenses:
-            expense["id"] = id
+            expense["ID"] = id
             id += 1
 
         with open("sample.json", "w") as outfile:
@@ -86,3 +86,15 @@ class CommandParser:
 
     def exit(self):
         sys.exit()
+
+    def commands(self):
+        print('- add "description" $10')
+        print("- list")
+        print("- summary")
+        print("- delete 1")
+
+    def clear(self):
+        if platform.system() == "Windows":
+            os.system("cls")
+        else:
+            os.system("clear")
