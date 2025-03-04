@@ -66,7 +66,20 @@ class CommandParser:
             total += int(expense["amount"])
         print(f"Total expenses: ${total}")
 
-    def delete(self): ...
+    def delete(self, id):
+        id = int(id)
+        for expense in self.expenses:
+            if id == expense["id"]:
+                index = id - 1
+                self.expenses.pop(index)
+        id = 1
+        for expense in self.expenses:
+            expense["id"] = id
+            id += 1
+
+        with open("sample.json", "w") as outfile:
+            json.dump(self.expenses, outfile)
+        print("Task deleted")
 
     def update(self): ...
 
