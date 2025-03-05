@@ -25,7 +25,7 @@ class CommandParser:
         except FileNotFoundError:
             self.expenses = []
 
-    def parse_command(self, command):
+    def parse_command(self, command: str) -> None:
         self.parts = shlex.split(command)
         self.command = self.parts[0].lower()
         self.args = self.parts[1:]
@@ -41,21 +41,25 @@ class CommandParser:
         except (TypeError, ValueError) as e:
             print(f"Invalid: {e}")
 
-    def add(self, description, amount):
-        current_time = datetime.now()
-        formatted_date = current_time.strftime("%Y-%d-%m")
-        id = len(self.expenses) + 1
-        expense = {
-            "ID": id,
-            "Description": description,
-            "Date": formatted_date,
-            "Amount": amount,
-        }
-        self.expenses.append(expense)
-        with open("sample.json", "w") as outfile:
-            json.dump(self.expenses, outfile)
+    def add(self, description: str, amount: str) -> None:
+        try:
+            current_time = datetime.now()
+            formatted_date = current_time.strftime("%Y-%m-%d")
+            id = len(self.expenses) + 1
+            expense = {
+                "ID": id,
+                "Description": description,
+                "Date": formatted_date,
+                "Amount": amount,
+            }
+            self.expenses.append(expense)
+            with open("sample.json", "w") as outfile:
+                json.dump(self.expenses, outfile)
 
-        print(f"Expense added succesfully (ID: {id})")
+            print(f"Expense added succesfully (ID: {id})")
+
+        except ValueError:
+            print("Amount must be a valid number")
 
     def list(self):
         self.clear()
@@ -67,7 +71,7 @@ class CommandParser:
             total += int(expense["Amount"])
         print(f"Total expenses: ${total}")
 
-    def delete(self, id):
+    def delete(self, id: int) -> None:
         id = int(id)
         for expense in self.expenses:
             if id == expense["ID"]:
@@ -82,11 +86,14 @@ class CommandParser:
             json.dump(self.expenses, outfile)
         print("Expense deleted successfully")
 
-    def update(self, id, description, amount):
+    def update(self, id: str, description: str, amount: str) -> None:
         for expense in self.expenses:
             if id == expense["ID"]:
                 expense["Description"] = description
                 expense["Amount"] = amount
+
+        with open("sample.json", "w") as outfile:
+            json.dump(self.expenses, outfile)
 
     def exit(self):
         sys.exit()
