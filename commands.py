@@ -5,6 +5,7 @@ import sys
 from tabulate import tabulate
 import os
 import platform
+from colorama import Fore
 
 
 class CommandParser:
@@ -36,23 +37,23 @@ class CommandParser:
             if handler:
                 return handler(*self.args)
             else:
-                print("Invalid.")
+                print(Fore.RED + 'Invalid. Type "commands" to see commands')
 
         except (TypeError, ValueError) as e:
-            print(f"Invalid: {e}")
+            print(Fore.RED + f"Invalid: {e}")
 
     def add(self, description: str, amount: str) -> None:
         if not description.strip():
-            print("Description cannot be empty")
+            print(Fore.RED + "Description cannot be empty")
 
         try:
             amount_float = float(amount)
             if amount_float <= 0:
-                print("Amount cannot be less than or equal to 0")
+                print(Fore.RED + "Amount cannot be less than or equal to 0")
                 return
 
         except ValueError:
-            print("Amount cannot be empty")
+            print(Fore.RED + "Amount cannot be empty")
 
         try:
             current_time = datetime.now()
@@ -68,14 +69,18 @@ class CommandParser:
             with open("sample.json", "w") as outfile:
                 json.dump(self.expenses, outfile)
 
-            print(f"Expense added succesfully (ID: {id})")
+            print(Fore.GREEN + f"Expense added succesfully (ID: {id})")
 
         except ValueError:
-            print("Amount must be a valid number")
+            print(Fore.RED + "Amount must be a valid number")
 
     def list(self):
-        self.clear()
-        print(tabulate(self.expenses, headers="keys", tablefmt="github"))
+        if self.expenses == []:
+            print(Fore.RED + "Must add an expense before listing")
+            return
+        else:
+            self.clear()
+            print(tabulate(self.expenses, headers="keys", tablefmt="github"))
 
     def summary(self):
         total = 0
@@ -97,10 +102,10 @@ class CommandParser:
 
             with open("sample.json", "w") as outfile:
                 json.dump(self.expenses, outfile)
-            print("Expense deleted successfully")
+            print(Fore.GREEN + "Expense deleted successfully")
 
         except ValueError as e:
-            print(f"Error: {e}")
+            print(Fore.RED + f"Error: {e}")
 
     def update(self, id: str, description: str, amount: str) -> None:
         try:
@@ -112,7 +117,7 @@ class CommandParser:
             with open("sample.json", "w") as outfile:
                 json.dump(self.expenses, outfile)
         except:
-            print("Error:")
+            print(Fore.RED + "Error:")
 
     def exit(self):
         sys.exit()
