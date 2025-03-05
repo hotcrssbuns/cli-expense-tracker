@@ -42,6 +42,18 @@ class CommandParser:
             print(f"Invalid: {e}")
 
     def add(self, description: str, amount: str) -> None:
+        if not description.strip():
+            print("Description cannot be empty")
+
+        try:
+            amount_float = float(amount)
+            if amount_float <= 0:
+                print("Amount cannot be less than or equal to 0")
+                return
+
+        except ValueError:
+            print("Amount cannot be empty")
+
         try:
             current_time = datetime.now()
             formatted_date = current_time.strftime("%Y-%m-%d")
