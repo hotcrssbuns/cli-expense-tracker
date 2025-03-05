@@ -72,28 +72,35 @@ class CommandParser:
         print(f"Total expenses: ${total}")
 
     def delete(self, id: int) -> None:
-        id = int(id)
-        for expense in self.expenses:
-            if id == expense["ID"]:
-                index = id - 1
-                self.expenses.pop(index)
-        id = 1
-        for expense in self.expenses:
-            expense["ID"] = id
-            id += 1
+        try:
+            id = int(id)
+            for expense in self.expenses:
+                if id == expense["ID"]:
+                    index = id - 1
+                    self.expenses.pop(index)
+            id = 1
+            for expense in self.expenses:
+                expense["ID"] = id
+                id += 1
 
-        with open("sample.json", "w") as outfile:
-            json.dump(self.expenses, outfile)
-        print("Expense deleted successfully")
+            with open("sample.json", "w") as outfile:
+                json.dump(self.expenses, outfile)
+            print("Expense deleted successfully")
+
+        except ValueError as e:
+            print(f"Error: {e}")
 
     def update(self, id: str, description: str, amount: str) -> None:
-        for expense in self.expenses:
-            if id == expense["ID"]:
-                expense["Description"] = description
-                expense["Amount"] = amount
+        try:
+            for expense in self.expenses:
+                if id == expense["ID"]:
+                    expense["Description"] = description
+                    expense["Amount"] = amount
 
-        with open("sample.json", "w") as outfile:
-            json.dump(self.expenses, outfile)
+            with open("sample.json", "w") as outfile:
+                json.dump(self.expenses, outfile)
+        except:
+            print("Error:")
 
     def exit(self):
         sys.exit()
